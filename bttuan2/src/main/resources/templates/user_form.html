@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Thêm Người Dùng</title>
+  </head>
+  <body>
+    <h1>Thêm Người Dùng Mới</h1>
+
+    <form th:action="@{/add-user}" th:object="${user}" method="post">
+      <p>Họ và tên: <input type="text" th:field="*{name}" /></p>
+      <p>Email: <input type="email" th:field="*{email}" /></p>
+      <p>Tuổi: <input type="number" th:field="*{age}" /></p>
+      <button type="submit">Lưu</button>
+    </form>
+
+    <p th:text="${message}" style="color: green"></p>
+  </body>
+</html>
