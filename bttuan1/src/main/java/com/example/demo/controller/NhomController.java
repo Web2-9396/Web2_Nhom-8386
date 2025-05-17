@@ -15,5 +15,6 @@ public class NhomController {
         List<String> members = Arrays.asList("Thái Văn Phúc", "Cao Nguyên Bình An", "Lê Thị Thu Thảo", "Nguyễn Lê văn Hồng Phúc");
         model.addAttribute("members", members);
         return "nhom";
+        
     }
 }
