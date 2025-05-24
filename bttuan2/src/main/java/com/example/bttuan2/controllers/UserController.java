@@ -13,6 +13,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping("/")
+    public String showTeam() {
+        return "index";
+    }
+
     @GetMapping("/user-form")
     public String showForm(Model model) {
         model.addAttribute("user", new User());
