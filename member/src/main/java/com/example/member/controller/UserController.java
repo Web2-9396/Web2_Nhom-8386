@@ -17,7 +17,7 @@ public class UserController {
     @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "home"; // home.html hiển thị danh sách người dùng
+        return "home"; 
     }
 
     // Chi tiết người dùng
@@ -28,20 +28,19 @@ public class UserController {
             return "redirect:/users";
         }
         model.addAttribute("user", user);
-        return "detail_user"; // detail_user.html hiển thị chi tiết
+        return "detail_user";
     }
 
-    // Trang form thêm mới người dùng
+    // Them người dùng 
     @GetMapping("/user/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        return "new_user"; // new_user.html chứa form thêm mới
+        return "new_user"; 
     }
-
-    // Xử lý lưu người dùng mới
+    // Lưu người dùng mới
     @PostMapping("/users")
     public String saveUser(@ModelAttribute User user) {
         userRepository.save(user);
-        return "redirect:/users"; // sau khi lưu xong, chuyển về danh sách
+        return "redirect:/users"; 
     }
 }
