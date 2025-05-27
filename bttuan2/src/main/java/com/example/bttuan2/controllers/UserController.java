@@ -1,4 +1,4 @@
-package com.example.bttuan2.controller;
+package com.example.bttuan2.controllers;
 
 import com.example.bttuan2.models.User;
 import com.example.bttuan2.repository.UserRepository;
