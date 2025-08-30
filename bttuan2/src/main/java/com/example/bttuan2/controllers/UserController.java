@@ -29,5 +29,8 @@ public class UserController {
         userRepository.save(user);
         model.addAttribute("message", "Người dùng đã được lưu thành công!");
         return "user_form";
+
+
+
     }
 }
