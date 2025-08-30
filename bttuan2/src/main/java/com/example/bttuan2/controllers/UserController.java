@@ -15,7 +15,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    // Hiển thị form thêm user
+    @GetMapping("/")
+    public String showTeam() {
+        return "index";
+    }
+  
     @GetMapping("/user-form")
     public String showForm(Model model) {
         model.addAttribute("user", new User());
