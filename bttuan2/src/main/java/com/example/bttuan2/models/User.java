@@ -8,6 +8,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String name;
+
+    private String email;
+    private int age;
+    private int phone;
 
     public int getId() {
         return id;
@@ -16,11 +21,6 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
-
-    private String name;
-
-    private String email;
-    private int age;
 
     public String getName() {
         return name;
@@ -44,5 +44,13 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getPhone() {
+        return phone;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
     }
 }
