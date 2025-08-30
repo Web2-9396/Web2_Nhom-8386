@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Danh sách thành viên</title>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <h2>Danh sách thành viên</h2>
+
+    <table border="1" cellpadding="8">
+      <tr>
+        <th>ID</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Tuổi</th>
+      </tr>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.age}"></td>
+        <td>
+          <a th:href="@{'/edit-user/' + ${user.id}}">Sửa</a>
+          <a
+            th:href="@{'/delete-user/' + ${user.id}}"
+            onclick="return confirm('Bạn có chắc muốn xóa không?')"
+            >Xóa</a
+          >
+        </td>
+      </tr>
+    </table>
+    <a th:href="@{/user-form}">Thêm thành viên</a>
+  </body>
+</html>
