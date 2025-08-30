@@ -3,9 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>User Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        a.add-user-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        a.add-user-btn:hover {
+            background: linear-gradient(135deg, #45a049, #1b5e20);
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
-    <a href="/user-form">Add User</a>
+<a href="/user-form" class="add-user-btn">➕ Add User</a>
 </body>
 </html>
