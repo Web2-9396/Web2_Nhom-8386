@@ -1,51 +1,108 @@
 package com.example.bttuan3.controllers;
 
+import com.example.bttuan3.models.Company;
 import com.example.bttuan3.models.Role;
 import com.example.bttuan3.models.User;
+import com.example.bttuan3.repository.CompanyRepository;
 import com.example.bttuan3.repository.RoleRepository;
 import com.example.bttuan3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
     @Autowired private UserRepository userRepo;
     @Autowired private RoleRepository roleRepo;
+    @Autowired private CompanyRepository companyRepo;
 
+    // Hiển thị danh sách user
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public String getAllUsers(Model model) {
+        List<User> users = userRepo.findAll();
+        List<Role> roles = roleRepo.findAll();
+        List<Company> companies = companyRepo.findAll();
+        model.addAttribute("users", users);
+        model.addAttribute("roles", roles);
+        model.addAttribute("companies", companies);
+        model.addAttribute("user", new User());
+        return "users"; // users.html
     }
 
+    // Thêm user
     @PostMapping
-    public User addUser(@RequestBody User user) {
-        return userRepo.save(user);
+    public String addUser(@ModelAttribute User user) {
+        if (user.getCompany() != null && user.getCompany().getId() != null) {
+            Company company = companyRepo.findById(user.getCompany().getId()).orElse(null);
+            user.setCompany(company);
+        }
+        userRepo.save(user);
+        return "redirect:/users";
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userRepo.findById(id).orElse(null);
+
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        User user = userRepo.findById(id).orElse(null);
+        if (user != null) {
+            user.getRoles().clear();  // xóa liên kết với role
+            userRepo.delete(user);    // xóa user
+        }
+        return "redirect:/users";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userRepo.deleteById(id);
-    }
-
-   @PostMapping("/{userId}/roles/{roleId}")
-        public User assignRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) {
-            User user = userRepo.findById(userId).orElse(null);
-            Role role = roleRepo.findById(roleId).orElse(null);
-    if (user != null && role != null) {
+    // Gán role cho user (từ form assign-role)
+    @PostMapping("/assign-role")
+    public String assignRoleForm(@RequestParam Long userId, @RequestParam Long roleId) {
+        User user = userRepo.findById(userId).orElse(null);
+        Role role = roleRepo.findById(roleId).orElse(null);
+        if (user != null && role != null) {
             Set<Role> roles = user.getRoles();
             roles.add(role);
             user.setRoles(roles);
-            return userRepo.save(user);
+            userRepo.save(user);
         }
-        return null;
+        return "redirect:/users";
     }
+    // Sửa user - hiển thị form
+    @GetMapping("/edit/{id}")
+    public String editUser(@PathVariable Long id, Model model) {
+        User user = userRepo.findById(id).orElse(null);
+        if (user == null) {
+            return "redirect:/users";
+        }
+        List<Role> roles = roleRepo.findAll();
+        List<Company> companies = companyRepo.findAll();
+
+        model.addAttribute("user", user);
+        model.addAttribute("roles", roles);
+        model.addAttribute("companies", companies);
+        return "edit-user"; // edit-user.html
+    }
+
+    // Cập nhật user
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute User updatedUser) {
+        User user = userRepo.findById(id).orElse(null);
+        if (user != null) {
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
+
+            if (updatedUser.getCompany() != null && updatedUser.getCompany().getId() != null) {
+                Company company = companyRepo.findById(updatedUser.getCompany().getId()).orElse(null);
+                user.setCompany(company);
+            }
+
+            userRepo.save(user);
+        }
+        return "redirect:/users";
+    }
+
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Công ty</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+
+<!-- Tiêu đề -->
+<div class="text-center mb-5">
+    <h2 class="fw-bold text-primary">📂 Quản lý Công ty</h2>
+    <p class="text-muted">Thêm, xem và quản lý danh sách công ty cùng nhân viên</p>
+</div>
+
+<!-- Form thêm công ty -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">➕ Thêm công ty mới</h5>
+        <form th:action="@{/companies}" method="post">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="companyName"
+                           placeholder="Nhập tên công ty..." required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-building"></i> Thêm
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bảng danh sách công ty -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-3">📋 Danh sách công ty</h5>
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark text-center">
+            <tr>
+                <th style="width: 10%;">ID</th>
+                <th style="width: 55%;">Tên công ty</th>
+                <th style="width: 35%;">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="company : ${companies}">
+                <td th:text="${company.id}" class="text-center fw-semibold"></td>
+                <td th:text="${company.companyName}"></td>
+                <td class="text-center">
+                    <div class="btn-group">
+                        <a th:href="@{'/companies/' + ${company.id} + '/users'}"
+                           class="btn btn-primary btn-sm">
+                            👨‍💼 Nhân viên
+                        </a>
+                        <a th:href="@{'/companies/delete/' + ${company.id}}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn xóa công ty này?');">
+                            🗑️ Xóa
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${companies.size() == 0}">
+                <td colspan="3" class="text-center text-muted fst-italic">
+                    Chưa có công ty nào trong hệ thống
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Điều hướng -->
+<div class="mt-4 text-center">
+    <a href="/users" class="btn btn-outline-primary me-2">👤 Quản lý User</a>
+    <a href="/roles" class="btn btn-outline-secondary">⚙️ Quản lý Role</a>
+</div>
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+</body>
+</html>
