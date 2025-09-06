@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Người dùng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .card-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .badge-role {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body class="container py-5">
+
+
+<div class="text-center mb-5">
+    <h2 class="fw-bold text-primary"><i class="bi bi-people-fill"></i> Quản lý Người dùng</h2>
+    <p class="text-muted">Thêm, xem và quản lý danh sách người dùng, công ty và vai trò</p>
+</div>
+
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header text-black">
+        <i class="bi bi-person-plus-fill"></i> Thêm Người dùng mới
+    </div>
+    <div class="card-body">
+        <form th:action="@{/users}" method="post" class="row g-2">
+            <div class="col-md-3"><input type="text" class="form-control" name="firstName" placeholder="Họ" required></div>
+            <div class="col-md-3"><input type="text" class="form-control" name="lastName" placeholder="Tên" required></div>
+            <div class="col-md-3"><input type="email" class="form-control" name="email" placeholder="Email" required></div>
+            <div class="col-md-3"><input type="password" class="form-control" name="password" placeholder="Mật khẩu" required></div>
+            <div class="col-md-6 mt-2">
+                <select name="company.id" class="form-select">
+                    <option value=""> <i class="bi bi-building"></i> Chọn công ty </option>
+                    <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.companyName}"></option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Thêm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="bi bi-list-ul"></i> Danh sách Người dùng
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark text-center">
+            <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Công ty</th>
+                <th>Vai trò</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}" class="text-center"></td>
+                <td th:text="${user.firstName + ' ' + user.lastName}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.company != null ? user.company.companyName : 'Chưa có'}"></td>
+                <td class="text-center">
+                    <span th:each="role : ${user.roles}"
+                          th:text="${role.roleName}"
+                          class="badge bg-info me-1 badge-role"></span>
+                    <span th:if="${#lists.isEmpty(user.roles)}" class="text-muted fst-italic">Chưa có</span>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group">
+                        <a th:href="@{'/users/delete/' + ${user.id}}" class="btn btn-danger btn-sm btn-icon">
+                            <i class="bi bi-trash-fill"></i> Xóa
+                        </a>
+                        <button class="btn btn-primary btn-sm btn-icon" data-bs-toggle="modal"
+                                th:data-bs-target="'#editUserModal' + ${user.id}">
+                            <i class="bi bi-pencil-square"></i> Sửa
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div th:each="user : ${users}" th:id="'editUserModal' + ${user.id}" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{'/users/update/' + ${user.id}}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Chỉnh sửa User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-2" name="firstName" th:value="${user.firstName}" placeholder="Họ" required>
+                    <input type="text" class="form-control mb-2" name="lastName" th:value="${user.lastName}" placeholder="Tên" required>
+                    <input type="email" class="form-control mb-2" name="email" th:value="${user.email}" placeholder="Email" required>
+                    <input type="password" class="form-control mb-2" name="password" th:value="${user.password}" placeholder="Mật khẩu" required>
+                    <select name="company.id" class="form-select">
+                        <option value="">-- Chọn công ty --</option>
+                        <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.companyName}"
+                                th:selected="${user.company != null and c.id == user.company.id}"></option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success btn-icon">
+                        <i class="bi bi-save"></i> Lưu
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-icon" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Đóng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="card shadow-sm p-3 mt-4">
+    <div class="card-header text-black">
+        <i class="bi bi-person-check-fill"></i> Gán vai trò cho User
+    </div>
+    <div class="card-body">
+        <form th:action="@{/users/assign-role}" method="post" class="row g-2">
+            <div class="col-md-4">
+                <select name="userId" class="form-select" required>
+                    <option value=""> Chọn user </option>
+                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.firstName + ' ' + u.lastName}"></option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="roleId" class="form-select" required>
+                    <option value=""> Chọn role </option>
+                    <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.roleName}"></option>
+                </select>
+            </div>
+            <div class="col-md-4 d-grid">
+                <button type="submit" class="btn btn-primary btn-icon w-100">
+                    <i class="bi bi-plus-circle"></i> Gán Role
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="d-flex justify-content-center mt-4 gap-3">
+    <a href="/companies" class="btn btn-outline-primary btn-icon">
+        <i class="bi bi-building"></i> Quản lý Công ty
+    </a>
+    <a href="/roles" class="btn btn-outline-secondary btn-icon">
+        <i class="bi bi-gear-fill"></i> Quản lý Role
+    </a>
+</div>
+</body>
+</html>
