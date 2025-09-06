@@ -21,7 +21,7 @@ public class UserController {
     @Autowired private RoleRepository roleRepo;
     @Autowired private CompanyRepository companyRepo;
 
-    // Hiển thị danh sách user
+
     @GetMapping
     public String getAllUsers(Model model) {
         List<User> users = userRepo.findAll();
@@ -31,10 +31,9 @@ public class UserController {
         model.addAttribute("roles", roles);
         model.addAttribute("companies", companies);
         model.addAttribute("user", new User());
-        return "users"; // users.html
+        return "users";
     }
 
-    // Thêm user
     @PostMapping
     public String addUser(@ModelAttribute User user) {
         if (user.getCompany() != null && user.getCompany().getId() != null) {
@@ -50,13 +49,13 @@ public class UserController {
     public String deleteUser(@PathVariable Long id) {
         User user = userRepo.findById(id).orElse(null);
         if (user != null) {
-            user.getRoles().clear();  // xóa liên kết với role
-            userRepo.delete(user);    // xóa user
+            user.getRoles().clear();
+            userRepo.delete(user);
         }
         return "redirect:/users";
     }
 
-    // Gán role cho user (từ form assign-role)
+
     @PostMapping("/assign-role")
     public String assignRoleForm(@RequestParam Long userId, @RequestParam Long roleId) {
         User user = userRepo.findById(userId).orElse(null);
@@ -69,7 +68,7 @@ public class UserController {
         }
         return "redirect:/users";
     }
-    // Sửa user - hiển thị form
+
     @GetMapping("/edit/{id}")
     public String editUser(@PathVariable Long id, Model model) {
         User user = userRepo.findById(id).orElse(null);
@@ -82,10 +81,9 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
         model.addAttribute("companies", companies);
-        return "edit-user"; // edit-user.html
+        return "edit-user";
     }
 
-    // Cập nhật user
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable Long id, @ModelAttribute User updatedUser) {
         User user = userRepo.findById(id).orElse(null);

@@ -14,23 +14,23 @@ import java.util.List;
 public class RoleController {
     @Autowired private RoleRepository roleRepo;
 
-    // Hiển thị danh sách role
+
     @GetMapping
     public String getAllRoles(Model model) {
         List<Role> roles = roleRepo.findAll();
         model.addAttribute("roles", roles);
         model.addAttribute("role", new Role());
-        return "roles"; // trả về roles.html
+        return "roles";
     }
 
-    // Thêm role
+
     @PostMapping
     public String addRole(@ModelAttribute Role role) {
         roleRepo.save(role);
         return "redirect:/roles";
     }
 
-    // Xóa role
+
     @GetMapping("/delete/{id}")
     public String deleteRole(@PathVariable Long id) {
         roleRepo.deleteById(id);

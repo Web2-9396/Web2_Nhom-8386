@@ -17,30 +17,30 @@ public class CompanyController {
     @Autowired private CompanyRepository companyRepo;
     @Autowired private UserRepository userDemoRepository;
 
-    // Hiển thị danh sách công ty
+
     @GetMapping
     public String getAllCompanies(Model model) {
         List<Company> companies = companyRepo.findAll();
         model.addAttribute("companies", companies);
         model.addAttribute("company", new Company()); // để bind form
-        return "companies"; // trả về companies.html
+        return "companies";
     }
 
-    // Thêm công ty
+
     @PostMapping
     public String addCompany(@ModelAttribute Company company) {
         companyRepo.save(company);
         return "redirect:/companies";
     }
 
-    // Xóa công ty
+
     @GetMapping("/delete/{id}")
     public String deleteCompany(@PathVariable int id) {
         companyRepo.deleteById((long) id);
         return "redirect:/companies";
     }
 
-    // Xem nhân viên trong công ty
+
     @GetMapping("/{companyId}/users")
     public String getUsersByCompany(@PathVariable Long companyId, Model model) {
         Company company = companyRepo.findById(companyId).orElse(null);
