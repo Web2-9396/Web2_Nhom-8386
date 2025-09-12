@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+      }
+      form {
+        max-width: 360px;
+        margin: 0 auto;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        margin: 6px 0;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 8px 14px;
+      }
+      .msg {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Đăng nhập</h2>
+
+    <form th:action="@{/login}" method="post">
+      <div>
+        <label for="email">Email:</label>
+        <input
+          id="email"
+          name="email"
+          type="text"
+          placeholder="you@example.com"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="password">Mật khẩu:</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Mật khẩu"
+          required
+        />
+      </div>
+
+      <div>
+        <button type="submit">Sign In</button>
+      </div>
+    </form>
+
+    <p>Chưa có tài khoản? <a th:href="@{/auth/register}">Đăng ký</a></p>
+
+    <div th:if="${param.error}" class="msg">
+      Đăng nhập thất bại — kiểm tra email hoặc mật khẩu.
+    </div>
+    <div th:if="${param.logout}" style="color: green">Bạn đã đăng xuất.</div>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sửa User</title>
+  </head>
+  <body>
+    <h2>Sửa User</h2>
+
+    <form
+      th:action="@{/users/update/{id}(id=${user.id})}"
+      method="post"
+      th:object="${user}"
+    >
+      <input type="text" th:field="*{firstName}" placeholder="Họ" />
+      <input type="text" th:field="*{lastName}" placeholder="Tên" />
+      <input type="email" th:field="*{email}" placeholder="Email" />
+      <input type="password" th:field="*{password}" placeholder="Mật khẩu" />
+
+      <select th:field="*{company.id}">
+        <option
+          th:each="c : ${companies}"
+          th:value="${c.id}"
+          th:text="${c.companyName}"
+        ></option>
+      </select>
+      <div class="mb-3">
+        <label class="form-label">Vị trí</label>
+        <select class="form-select" th:field="*{position.id}" required>
+          <option value="">-- Chọn vị trí --</option>
+          <option
+            th:each="pos : ${positions}"
+            th:value="${pos.id}"
+            th:text="${pos.positionName}"
+          ></option>
+        </select>
+      </div>
+      <button type="submit">Cập nhật</button>
+    </form>
+
+    <p><a th:href="@{/users}">Quay lại danh sách</a></p>
+  </body>
+</html>

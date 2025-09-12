@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đăng ký</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+      }
+      form {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin: 6px 0;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 8px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Đăng ký tài khoản mới</h2>
+
+    <form
+      th:action="@{/auth/process-register}"
+      th:object="${user}"
+      method="post"
+    >
+      <div>
+        <label>Họ:</label>
+        <input
+          type="text"
+          th:field="*{firstName}"
+          placeholder="Nguyễn"
+          required
+        />
+      </div>
+      <div>
+        <label>Tên:</label>
+        <input type="text" th:field="*{lastName}" placeholder="An" required />
+      </div>
+      <div>
+        <label>Email (dùng để đăng nhập):</label>
+        <input
+          type="email"
+          th:field="*{email}"
+          placeholder="you@example.com"
+          required
+        />
+      </div>
+      <div>
+        <label>Mật khẩu:</label>
+        <input
+          type="password"
+          th:field="*{password}"
+          placeholder="Mật khẩu"
+          required
+        />
+      </div>
+
+      <div th:if="${companies != null}">
+        <label>Công ty (tuỳ chọn):</label>
+        <select th:field="*{company.id}">
+          <option
+            th:each="c : ${companies}"
+            th:value="${c.id}"
+            th:text="${c.name}"
+          ></option>
+        </select>
+      </div>
+
+      <div>
+        <button type="submit">Đăng ký</button>
+        <a th:href="@{/auth/login}" style="margin-left: 10px"
+          >Quay lại đăng nhập</a
+        >
+      </div>
+    </form>
+  </body>
+</html>
