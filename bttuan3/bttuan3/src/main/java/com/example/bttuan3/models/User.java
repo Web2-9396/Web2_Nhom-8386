@@ -26,6 +26,13 @@ public class User {
     private String password;
     private String email;
 
+      @ManyToOne
+    @JoinColumn(name = "position_id")
+    private Position position; 
+
+    public Position getPosition() { return position; }
+    public void setPosition(Position position) { this.position = position; }
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

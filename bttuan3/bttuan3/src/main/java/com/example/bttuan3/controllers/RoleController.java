@@ -12,9 +12,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/roles")
 public class RoleController {
-    @Autowired private RoleRepository roleRepo;
 
+    @Autowired 
+    private RoleRepository roleRepo;
 
+    // Hiển thị tất cả role
     @GetMapping
     public String getAllRoles(Model model) {
         List<Role> roles = roleRepo.findAll();
@@ -27,13 +29,6 @@ public class RoleController {
     @PostMapping
     public String addRole(@ModelAttribute Role role) {
         roleRepo.save(role);
-        return "redirect:/roles";
-    }
-
-
-    @GetMapping("/delete/{id}")
-    public String deleteRole(@PathVariable Long id) {
-        roleRepo.deleteById(id);
         return "redirect:/roles";
     }
 }

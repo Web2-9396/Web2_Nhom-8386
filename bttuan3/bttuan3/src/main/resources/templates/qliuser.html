@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quản lý người dùng</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #f0f0f0;
+      }
+      a.button {
+        padding: 6px 10px;
+        border: 1px solid #666;
+        text-decoration: none;
+        margin-right: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Quản lý tài khoản</h2>
+      <div>
+        Đăng nhập bằng: <strong th:text="${#authentication.name}">user</strong>
+        &nbsp;|&nbsp;
+        <a th:href="@{/logout}">Logout</a>
+      </div>
+    </header>
+
+    <div style="margin-top: 10px">
+      <div sec:authorize="hasAuthority('ADMIN')">
+        <a class="button" th:href="@{/register}">Tạo tài khoản mới</a>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Họ</th>
+          <th>Tên</th>
+          <th>Email</th>
+          <th>Roles</th>
+          <th>Công ty</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="u : ${users}">
+          <td th:text="${u.id}">1</td>
+          <td th:text="${u.firstName}">Ho</td>
+          <td th:text="${u.lastName}">Ten</td>
+          <td th:text="${u.email}">a@b.com</td>
+          <td>
+            <span
+              th:each="r : ${u.roles}"
+              th:text="${r.roleName}"
+              style="margin-right: 6px"
+              >ROLE</span
+            >
+          </td>
+          <td th:text="${u.company != null ? u.company.name : '-'}">Company</td>
+          <td>
+            <span sec:authorize="hasAuthority('ADMIN')">
+              <a th:href="@{|/users/edit/${u.id}|}">Edit</a>
+              &nbsp;|&nbsp;
+              <a
+                th:href="@{|/users/delete/${u.id}|}"
+                onclick="return confirm('Xác nhận xóa user này?')"
+                >Delete</a
+              >
+            </span>
+
+            <span
+              sec:authorize="isAuthenticated() and #authentication.name == ${u.email}"
+            >
+              &nbsp;|&nbsp;<a th:href="@{|/users/edit/${u.id}|}"
+                >Edit profile</a
+              >
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Thêm User</title>
+  </head>
+  <body>
+    <h2>Thêm User</h2>
+
+    <form th:action="@{/users/add}" method="post" th:object="${user}">
+      <div>
+        <input type="text" th:field="*{firstName}" placeholder="Họ" required />
+      </div>
+      <div>
+        <input type="text" th:field="*{lastName}" placeholder="Tên" required />
+      </div>
+      <div>
+        <input type="email" th:field="*{email}" placeholder="Email" required />
+      </div>
+      <div>
+        <input
+          type="password"
+          th:field="*{password}"
+          placeholder="Mật khẩu"
+          required
+        />
+      </div>
+
+      <!-- Chọn công ty -->
+      <div>
+        <select th:field="*{company.id}">
+          <option value="">-- Chọn công ty --</option>
+          <option
+            th:each="c : ${companies}"
+            th:value="${c.id}"
+            th:text="${c.companyName}"
+          ></option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Vị trí</label>
+        <select class="form-select" name="position.id" required>
+          <option value="">-- Chọn vị trí --</option>
+          <option
+            th:each="pos : ${positions}"
+            th:value="${pos.id}"
+            th:text="${pos.positionName}"
+          ></option>
+        </select>
+      </div>
+      <button type="submit">Thêm</button>
+    </form>
+
+    <p><a th:href="@{/users}">Quay lại danh sách</a></p>
+  </body>
+</html>
