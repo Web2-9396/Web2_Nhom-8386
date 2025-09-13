@@ -50,6 +50,7 @@
                                 "/users/edit/**", 
                                 "/users/assign-role").hasAuthority("ADMIN")
                 .anyRequest().permitAll()
+
             )
             .formLogin(form -> form
                 .loginPage("/auth/login")        

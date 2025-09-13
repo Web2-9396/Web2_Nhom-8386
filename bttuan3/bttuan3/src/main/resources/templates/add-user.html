@@ -1,56 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>Thêm User</title>
-  </head>
-  <body>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            background: #fff;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        .card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #d63384;
+            font-weight: 700;
+        }
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #f3b5c6;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #555;
+        }
+        .btn-pink {
+            background: linear-gradient(135deg, #ff6f91, #ff9a9e);
+            border: none;
+            border-radius: 0.5rem;
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+            color: #333333;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-pink:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 111, 145, 0.5);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #d63384;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
     <h2>Thêm User</h2>
 
     <form th:action="@{/users/add}" method="post" th:object="${user}">
-      <div>
-        <input type="text" th:field="*{firstName}" placeholder="Họ" required />
-      </div>
-      <div>
-        <input type="text" th:field="*{lastName}" placeholder="Tên" required />
-      </div>
-      <div>
-        <input type="email" th:field="*{email}" placeholder="Email" required />
-      </div>
-      <div>
-        <input
-          type="password"
-          th:field="*{password}"
-          placeholder="Mật khẩu"
-          required
-        />
-      </div>
+        <div class="mb-3">
+            <label class="form-label">Họ</label>
+            <input type="text" th:field="*{firstName}" class="form-control" placeholder="Họ" required />
+        </div>
 
-      <!-- Chọn công ty -->
-      <div>
-        <select th:field="*{company.id}">
-          <option value="">-- Chọn công ty --</option>
-          <option
-            th:each="c : ${companies}"
-            th:value="${c.id}"
-            th:text="${c.companyName}"
-          ></option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Vị trí</label>
-        <select class="form-select" name="position.id" required>
-          <option value="">-- Chọn vị trí --</option>
-          <option
-            th:each="pos : ${positions}"
-            th:value="${pos.id}"
-            th:text="${pos.positionName}"
-          ></option>
-        </select>
-      </div>
-      <button type="submit">Thêm</button>
+        <div class="mb-3">
+            <label class="form-label">Tên</label>
+            <input type="text" th:field="*{lastName}" class="form-control" placeholder="Tên" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="Email" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Mật khẩu" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Công ty</label>
+            <select th:field="*{company.id}" class="form-select" required>
+                <option value="">-- Chọn công ty --</option>
+                <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.companyName}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Vị trí</label>
+            <select class="form-select" th:field="*{position.id}" required>
+                <option value="">-- Chọn vị trí --</option>
+                <option th:each="pos : ${positions}" th:value="${pos.id}" th:text="${pos.positionName}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-pink"> Thêm User</button>
     </form>
 
-    <p><a th:href="@{/users}">Quay lại danh sách</a></p>
-  </body>
+    <a th:href="@{/users}" class="back-link"> Quay lại danh sách</a>
+</div>
+</body>
 </html>
