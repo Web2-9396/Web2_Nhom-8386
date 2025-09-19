@@ -43,12 +43,14 @@
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/auth/register", "/auth/process-register").permitAll()
                 .requestMatchers("/auth/login", "/auth/logout").permitAll()
+                .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/users").hasAnyAuthority("USER", "ADMIN")
                 .requestMatchers("/users/add", 
                                 "/users/update/**", 
                                 "/users/delete/**", 
                                 "/users/edit/**", 
-                                "/users/assign-role").hasAuthority("ADMIN")
+                                "/users/assign-role",
+                                "/companies/**").hasAuthority("ADMIN")
                 .anyRequest().permitAll()
 
             )
@@ -56,7 +58,7 @@
                 .loginPage("/auth/login")        
                 .loginProcessingUrl("/login")      
                 .usernameParameter("email")        
-                .defaultSuccessUrl("/users", true) 
+                .defaultSuccessUrl("/users", true)
                 .permitAll()
             )
             .logout(config -> config.logoutUrl("/auth/logout")
