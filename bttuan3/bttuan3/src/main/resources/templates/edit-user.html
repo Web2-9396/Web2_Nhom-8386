@@ -3,118 +3,121 @@
 <head>
     <meta charset="UTF-8" />
     <title>Sửa User</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            font-family: "Segoe UI", sans-serif;
         }
         .card {
+            max-width: 650px;
+            margin: 40px auto;
             border-radius: 1rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-            width: 100%;
-            max-width: 600px;
-            padding: 2rem;
-            background: #fff;
-            animation: fadeIn 0.8s ease-in-out;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
         }
-        .card h2 {
+        .card-header {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.3rem;
             text-align: center;
-            margin-bottom: 1.5rem;
-            color: #d63384;
-            font-weight: 700;
+            padding: 1rem;
         }
         .form-control, .form-select {
             border-radius: 0.5rem;
-            border: 1px solid #f3b5c6;
         }
-        .form-label {
-            font-weight: 500;
-            color: #555;
+        .roles-box {
+            border: 1px solid #e9ecef;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            background: #fffafc;
         }
-        .btn-pink {
-            background: linear-gradient(135deg, #ff6f91, #ff9a9e);
+        .form-check-label {
+            font-size: 0.95rem;
+            color: #444;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
             border: none;
             border-radius: 0.5rem;
-            width: 100%;
-            padding: 10px;
-            font-weight: bold;
-            color: #0e0e0e;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 600;
+            padding: 10px 16px;
         }
-        .btn-pink:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 111, 145, 0.5);
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 1rem;
-            color: #d63384;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .btn-primary:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 <div class="card">
-    <h2>Sửa User</h2>
+    <div class="card-header">✏️ Sửa Người Dùng</div>
+    <div class="card-body">
+        <form th:action="@{/users/update/{id}(id=${user.id})}" method="post" th:object="${user}" class="row g-3">
 
-    <form th:action="@{/users/update/{id}(id=${user.id})}" method="post" th:object="${user}">
-        <div class="mb-3">
-            <label class="form-label">Họ</label>
-            <input type="text" th:field="*{firstName}" class="form-control" placeholder="Họ" required />
-        </div>
+            <div class="col-md-6">
+                <label class="form-label">Họ</label>
+                <input type="text" th:field="*{firstName}" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Tên</label>
+                <input type="text" th:field="*{lastName}" class="form-control" required />
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tên</label>
-            <input type="text" th:field="*{lastName}" class="form-control" placeholder="Tên" required />
-        </div>
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" th:field="*{email}" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Mật khẩu mới</label>
+                <input type="password" name="newPassword" class="form-control" />
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" th:field="*{email}" class="form-control" placeholder="Email" required />
-        </div>
+            <div class="col-md-6">
+                <label class="form-label">Công ty</label>
+                <select th:field="*{company.id}" class="form-select">
+                    <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.companyName}"
+                            th:selected="${user.company != null and user.company.id == c.id}"></option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password" th:field="*{password}" class="form-control" placeholder="Mật khẩu" required />
-        </div>
+            <div class="col-md-6">
+                <label class="form-label">Chức vụ</label>
+                <select th:field="*{position.id}" class="form-select">
+                    <option th:each="p : ${positions}" th:value="${p.id}" th:text="${p.positionName}"
+                            th:selected="${user.position != null and user.position.id == p.id}"></option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Công ty</label>
-            <select th:field="*{company.id}" class="form-select">
-                <option value=""> Chọn công ty </option>
-                <option th:each="c : ${companies}" th:value="${c.id}" th:text="${c.companyName}"></option>
-            </select>
-        </div>
+            <!-- Vai trò -->
+            <!-- Vai trò -->
+            <div class="col-12">
+                <label class="form-label fw-bold">Vai trò</label>
+                <div class="roles-box row row-cols-2 g-2">
+                    <div class="col" th:each="r : ${roles}">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   th:id="${'role_' + r.id}"
+                                   name="roleIds"
+                                   th:value="${r.id}"
+                                   th:checked="${#lists.contains(user.roles, r)}" />
+                            <label class="form-check-label"
+                                   th:for="${'role_' + r.id}"
+                                   th:text="${r.roleName}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Vị trí</label>
-            <select class="form-select" th:field="*{position.id}" required>
-                <option value="">Chọn vị trí </option>
-                <option th:each="pos : ${positions}" th:value="${pos.id}" th:text="${pos.positionName}"></option>
-            </select>
-        </div>
 
-        <button type="submit" class="btn btn-pink"> Cập nhật</button>
-    </form>
-
-    <a th:href="@{/users}" class="back-link"> Quay lại danh sách</a>
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                <a th:href="@{/users}" class="btn btn-secondary ms-2">↩ Quay lại</a>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

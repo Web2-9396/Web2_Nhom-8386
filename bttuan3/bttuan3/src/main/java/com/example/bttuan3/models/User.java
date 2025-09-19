@@ -1,5 +1,6 @@
 package com.example.bttuan3.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -21,17 +22,23 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
+    @JsonBackReference
     private Company company;
 
     private String password;
     private String email;
 
-      @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "position_id")
-    private Position position; 
+    private Position position;
 
-    public Position getPosition() { return position; }
-    public void setPosition(Position position) { this.position = position; }
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
