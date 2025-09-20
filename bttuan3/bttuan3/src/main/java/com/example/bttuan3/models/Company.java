@@ -1,5 +1,6 @@
 package com.example.bttuan3.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 @Table(name = "COMPANY")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Company {
     @Id
     @Column
