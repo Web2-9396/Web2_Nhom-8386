@@ -1,52 +1,60 @@
 package com.example.btvn_tuan6.config;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secret;
-    @Value("${jwt.expiration}")
-    private long jwtExpiration; // thời gian sống của token (ms)
+public class JwtTokenProvider {
 
-    // Sing token tu email
-    public String generateToken( String email) {
-        return Jwts.builders()
+    private final SecretKey jwtSecret;
+
+    @Value("${app.jwt-expiration-ms}")
+    private long jwtExpirationMs;
+
+    public JwtTokenProvider(@Value("${app.jwt-secret}") String secretKey) {
+        this.jwtSecret = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
+    // Sinh token từ email
+    public String generateToken(String email) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt( new Date())
-                .setExpiration( new Date(System.currentTimeMillis()+jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(jwtSecret, SignatureAlgorithm.HS512)
                 .compact();
     }
-    // Lay email tu token
-    public String getEmailFromToken(String token) {
-        return Jwts.parser()
+
+    // Lấy email từ token
+    public String getEmailFromJWT(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
-    // Xác minh token có hợp lệ không
-    public boolean validateToken(String token) {
+
+    // Xác minh token
+    public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(jwtSecret)
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException e) {
-            System.out.println("Invalid JWT signature: " + e.getMessage());
-        } catch (MalformedJwtException e) {
-            System.out.println("Invalid JWT token: " + e.getMessage());
-        } catch (ExpiredJwtException e) {
-            System.out.println("JWT token is expired: " + e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            System.out.println("JWT token is unsupported: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty: " + e.getMessage());
+        } catch (ExpiredJwtException ex) {
+            throw new RuntimeException("Token đã hết hạn");
+        } catch (JwtException ex) {
+            throw new RuntimeException("Token không hợp lệ");
         }
-        return false;
     }
-
-
 }

@@ -1,4 +1,11 @@
 package com.example.btvn_tuan6.repository;
 
-public class RoleRepository {
+import com.example.btvn_tuan6.models.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface RoleRepository extends JpaRepository<Role,Long> {
+    Optional<Role> findByRoleName(String roleName);
+
 }
