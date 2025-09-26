@@ -20,7 +20,7 @@ public class ApiController {
         this.companyService = companyService;
     }
 
-    // USER CRUD
+    // -------------------- USER CRUD --------------------
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
