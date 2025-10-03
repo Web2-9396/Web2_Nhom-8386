@@ -9,33 +9,35 @@ import com.example.btvn_tuan6.models.User;
 import com.example.btvn_tuan6.repository.UserRepository;
 import com.example.btvn_tuan6.services.AuthService;
 import com.example.btvn_tuan6.services.UserService;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.btvn_tuan6.repository.RoleRepository;
+
 @Service
 public class AuthServiceImpl implements AuthService {
+
     private final UserRepository userRepo;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RoleRepository roleRepo;
 
-    public AuthServiceImpl(UserRepository userRepo,
-                           UserService userService,
-                           PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager,
-                           JwtTokenProvider jwtTokenProvider) {
+    public AuthServiceImpl(UserRepository userRepo, UserService userService, PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, RoleRepository roleRepo) {
         this.userRepo = userRepo;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.roleRepo = roleRepo;
     }
 
-    //  Đăng ký
     @Override
     public AuthResponse register(RegisterDTO dto) {
         if (userRepo.existsByEmail(dto.getEmail())) {
@@ -48,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setFirstName(dto.getFirstName());
         newUser.setLastName(dto.getLastName());
 
-        // Nếu có companyId thì gán
+// Nếu có companyId thì gán
         if (dto.getCompanyId() != null) {
             Company company = new Company();
             company.setId(dto.getCompanyId());
@@ -56,19 +58,18 @@ public class AuthServiceImpl implements AuthService {
         }
         newUser.setPosition(null);
 
+// Nếu không có roles -> gán role USER mặc định
+        if (newUser.getRoles() == null || newUser.getRoles().isEmpty()) {
+            Role userRole = roleRepo.findByRoleName("USER")
+                    .orElseThrow(() -> new RuntimeException("Role USER not found. Did you run data initializer?"));
+            Set<Role> roles = new HashSet<>();
+            roles.add(userRole);
+            newUser.setRoles(roles);
+        }
+
         User savedUser = userService.createUser(newUser);
 
-
-        return new AuthResponse(null,
-                savedUser.getEmail(),
-                savedUser.getFirstName(),
-                savedUser.getLastName());
-
-    }
-
-    // Đăng nhập
-    @Override
-    public AuthResponse login(LoginDTO dto) {
+// authenticate and return token
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );

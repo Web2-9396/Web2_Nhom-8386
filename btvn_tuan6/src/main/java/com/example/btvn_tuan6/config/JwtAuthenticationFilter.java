@@ -26,8 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
@@ -37,8 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = tokenProvider.getEmailFromJWT(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
+                UsernamePasswordAuthenticationToken authentication
+                        = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities()
@@ -53,3 +53,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 }
+
+// protected void doFilterInternal(HttpServletRequest request,
+//                                 HttpServletResponse response,
+//                                 FilterChain filterChain) throws ServletException, IOException {
+//     String header = request.getHeader("Authorization");
+//     // Kiểm tra nếu header tồn tại và bắt đầu bằng "Bearer"
+//     if (header != null && header.startsWith("Bearer ")) {
+//         String token = header.substring(7);
+//         // Kiểm tra token hợp lệ thông qua validateToken
+//         ResponseEntity<?> tokenValidationResponse = tokenProvider.validateToken(token);
+//         // Nếu token không hợp lệ (không phải 200 OK), trả về phản hồi lỗi
+//         if (tokenValidationResponse.getStatusCode() != HttpStatus.OK) {
+//             response.setStatus(tokenValidationResponse.getStatusCodeValue());  // Set status code từ validateToken
+//             response.getWriter().write((String) tokenValidationResponse.getBody()); // Ghi thông báo lỗi vào response
+//             return; // Dừng tiếp tục filter chain
+//         }
+//         // Token hợp lệ, tiếp tục xử lý thông tin người dùng
+//         String username = tokenProvider.getEmailFromJWT(token);
+//         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//         UsernamePasswordAuthenticationToken authentication =
+//                 new UsernamePasswordAuthenticationToken(
+//                         userDetails,
+//                         null,
+//                         userDetails.getAuthorities()
+//                 );
+//         SecurityContextHolder.getContext().setAuthentication(authentication);
+//     }
+//     filterChain.doFilter(request, response); // Tiếp tục filter chain nếu token hợp lệ
+// }

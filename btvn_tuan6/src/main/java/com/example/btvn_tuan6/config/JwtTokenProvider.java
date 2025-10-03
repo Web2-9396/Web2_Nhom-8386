@@ -57,4 +57,21 @@ public class JwtTokenProvider {
             throw new RuntimeException("Token không hợp lệ");
         }
     }
+
+    // public ResponseEntity<?> validateToken(String authToken) {
+    //     try {
+    //         Jwts.parserBuilder()
+    //                 .setSigningKey(jwtSecret)
+    //                 .build()
+    //                 .parseClaimsJws(authToken);
+    //         return ResponseEntity.ok("Token hợp lệ");
+    //     } catch (ExpiredJwtException ex) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    //                 .body("Token đã hết hạn");
+    //     } catch (JwtException ex) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //                 .body("Token không hợp lệ");
+    //     }
+    // }
 }
+    
